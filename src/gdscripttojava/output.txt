@@ -1,0 +1,19 @@
+extends Node2D
+
+# Controls: up and down input names (set in Input Map)
+export var speed := 400            # pixels/sec
+export(String) var up_action := "ui_up"
+export(String) var down_action := "ui_down"
+
+void _process(delta):
+	var dir := 0
+	if Input.is_action_pressed(up_action):
+		dir -= 1
+	if Input.is_action_pressed(down_action):
+		dir += 1
+	position.y += dir * speed * delta
+
+	# Keep paddle inside the screen (assumes viewport origin at 0,0)
+	var screen_h := get_viewport_rect().size.y
+	var half_h := ($Sprite.texture.get_height() if has_node("Sprite") else 48) / 2
+	position.y = clamp(position.y, half_h, screen_h - half_h)
